@@ -353,7 +353,7 @@ If *MAVEN-HTTP-PROXY* is non-nil, parse its value as the http proxy."
      (java:jnew "org.sonatype.aether.resolution.ArtifactRequest"))))
 
 ;;; TODO change this to work on artifact strings like log4j:log4j:jar:1.2.16
-(defun resolve-artifact (group-id artifact-id &optional (version "LATEST" versionp))
+(defun resolve-artifact (group-id artifact-id &key (version "LATEST" versionp))
   "Resolve artifact to location on the local filesystem.
 
 Declared dependencies are not attempted to be located.
@@ -406,9 +406,8 @@ Returns the Maven specific string for the artifact "
 
 
 (defun resolve-dependencies (group-id artifact-id 
-                             &optional  ;;; XXX Uggh.  Move to keywords when we get the moxie.
-                             (version "LATEST" versionp)
-                             (repository *maven-remote-repository* repository-p))
+                             &key (version "LATEST" versionp)
+                                  (repository *maven-remote-repository* repository-p))
   "Dynamically resolve Maven dependencies for item with GROUP-ID and ARTIFACT-ID 
 optionally with a VERSION and a REPOSITORY.  Users of the function are advised 
 
@@ -430,10 +429,11 @@ in Java CLASSPATH representation."
 		     artifact (java:jfield (jss:find-java-class "JavaScopes") "RUNTIME")))
          (collect-request (java:jnew (jss:find-java-class "CollectRequest"))))
     (#"setRoot" collect-request dependency)
-    (#"addRepository" collect-request 
-                      (if repository-p
-                          (ensure-remote-repository :repository repository)
-                          (ensure-remote-repository)))
+    (when repository
+      (#"addRepository" collect-request 
+                        (if repository-p
+                            (ensure-remote-repository :repository repository)
+                            (ensure-remote-repository))))
     (let* ((node 
             (#"getRoot" (#"collectDependencies" (ensure-repository-system) (ensure-session) collect-request)))
            (dependency-request 
@@ -503,13 +503,19 @@ artifact and all of its transitive dependencies."
     (cond 
       ((= (length result) 3)
        (resolve-dependencies 
-        (first result) (second result) (third result)))
+        (first result) (second result) :version (third result)))
       ((string= string "com.sun.jna:jna")
        (warn "Replacing request for no longer available com.sun.jna:jna with net.java.dev.jna:jna")
-       (resolve-dependencies "net.java.dev.jna" "jna" "LATEST"))
+       (resolve-dependencies "net.java.dev.jna" "jna" :version "LATEST"))
       (t 
-       (setf result 
-             (apply #'resolve-dependencies (split-string string "/")))))))
-  
+       (destructuring-bind (group-id artifact-id &optional version repository)
+           (split-string string "/")
+         (setf result 
+               (apply #'resolve-dependencies group-id artifact-id
+                      (append (when version
+                                `(:version ,version))
+                              (when repository
+                                `(:repository ,repository))))))))))
+
 ;;; Currently the last file listed in ASDF
 (provide 'abcl-asdf)

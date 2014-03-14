@@ -14,7 +14,7 @@
 (defclass mvn (iri) 
   ((group-id :initarg :group-id :initform nil)
    (artifact-id :initarg :artifact-id :initform nil)
-   (repository :initform "http://repo1.maven.org/maven2/") ;;; XXX unimplemented
+   (repository :initarg :repository :initform "http://repo1.maven.org/maven2/") ;;; XXX unimplemented
    (resolved-classpath :initform nil :accessor resolved-classpath)
    (classname :initarg :classname :initform nil)
    (alternate-uri :initarg :alternate-uri :initform nil)
@@ -82,9 +82,10 @@
                (error "Failed to construct a mvn reference from name '~A' and version '~A'"
                       name version)))
         (setf schema "mvn")
-        (pushnew repository *mvn-repositories*)
+        (when repository
+          (pushnew repository *mvn-repositories*))
         ;;; Always normalized path "on the way out" to contain group-id/artifact-id/version
-        (setf path (format nil "~A/~A/~A" group-id artifact-id version))))
+        (setf path (format nil "~A/~A/~A/~A" group-id artifact-id version repository))))
     component))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
@@ -115,6 +116,7 @@ single entry denoting a remote binary artifact."
         (artifact-id (slot-value mvn-component 'asdf::artifact-id))
         (classname (slot-value mvn-component 'asdf::classname))
         (alternate-uri (slot-value mvn-component 'asdf::alternate-uri))
+        (repository (slot-value mvn-component 'asdf::repository))
         (version (if (slot-value mvn-component 'asdf::version)
                      (slot-value mvn-component 'asdf::version)
                      "LATEST")))
@@ -129,7 +131,9 @@ single entry denoting a remote binary artifact."
                                      "java.lang.ClassNotFoundException")
           (error "Unexpected Java exception~&~A.~&" e))))
     (if (find-mvn)
-        (resolve-dependencies group-id artifact-id version)
+        (resolve-dependencies group-id artifact-id
+                              :repository repository
+                              :version version)
         (if alternate-uri
             (values (namestring alternate-uri) alternate-uri) 
 	    (error "Failed to resolve MVN component name ~A." name)))))
