@@ -167,16 +167,17 @@ NAME can either string or a symbol according to the usual JSS conventions."
 
 (defun invoke-restargs (method object args &optional (raw? nil))
   (let* ((object-as-class-name 
-          (if (symbolp object) (maybe-resolve-class-against-imports object)))
+          (if (or (symbolp object) (stringp object))
+              (maybe-resolve-class-against-imports object)))
          (object-as-class 
           (if object-as-class-name (find-java-class object-as-class-name))))
     (if (eq method 'new)
         (apply #'jnew (or object-as-class-name object) args)
         (if raw?
-            (if (symbolp object)
+            (if (or (symbolp object) (stringp object))
                 (apply #'jstatic-raw method object-as-class  args)
                 (apply #'jcall-raw method object  args))
-            (if (symbolp object)
+            (if (or (symbolp object) (stringp object))
                 (apply #'jstatic method object-as-class args)
                 (apply #'jcall method object args))))))
 
