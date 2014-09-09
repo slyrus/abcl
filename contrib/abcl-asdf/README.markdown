@@ -89,7 +89,7 @@ Example 2
 Bypassing ASDF, one can directly issue requests for the Maven
 artifacts to be downloaded
 
-    CL-USER> (abcl-asdf:resolve "com.google.gwt:gwt-user")
+    CL-USER> (abcl-asdf:resolve "com.google.gwt/gwt-user")
     WARNING: Using LATEST for unspecified version.
     "/Users/evenson/.m2/repository/com/google/gwt/gwt-user/2.4.0-rc1/gwt-user-2.4.0-rc1.jar:/Users/evenson/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA.jar:/Users/evenson/.m2/repository/javax/validation/validation-api/1.0.0.GA/validation-api-1.0.0.GA-sources.jar"
 
@@ -100,7 +100,7 @@ ABCL-ASDF:RESOLVE does not added the resolved dependencies to the
 current JVM classpath.  Use JAVA:ADD-TO-CLASSPATH as follows to do
 that:
 
-    CL-USER> (java:add-to-classpath (abcl-asdf:as-classpath (abcl-asdf:resolve "com.google.gwt:gwt-user")))
+    CL-USER> (java:add-to-classpath (abcl-asdf:as-classpath (abcl-asdf:resolve "com.google.gwt/gwt-user")))
 
 Example 3
 ---------
