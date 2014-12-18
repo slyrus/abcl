@@ -83,8 +83,9 @@
                       name version)))
         (setf schema "mvn")
         (pushnew repository *mvn-repositories*)
-        ;;; Always normalized path "on the way out" to contain group-id/artifact-id/version
-        (setf path (format nil "~A/~A/~A" group-id artifact-id version))))
+        ;;; Always set path to normalized path "on the way out" to
+        ;;; contain group-id/artifact-id/version/repository
+        (setf path (format nil "~A/~A/~A" group-id artifact-id version repository))))
     component))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
