@@ -8,7 +8,10 @@ Enhancements
 
 * Consolidated RUN-PROGRAM fixes (ferada, pipping)
 
-* Upstream consolidated patchset (ferada)
+  In support of getting a more universal UIOP:RUN-PROGAM across all
+  contemporary Lisp implementations.
+
+* Upstream consolidated patchset (olof)
 
 ** [r14857] Support `FILE-POSITION` on string streams.
 ** [r14858] Runtime class improvements.
@@ -16,13 +19,12 @@ Enhancements
 ** [r14860] Add EXTERNAL-ONLY option to APROPOS.
 ** [r14861] Fix nested classes from JARs not visible with JSS.
 
-* Implemented "time of time" semantics for {encode,decode}-universal time.
-
+* Introduced "time of time" semantics for {encode,decode}-universal time.
 
 Fixes
 -----
 
-*  RandomCharacterFile et. al.
+*  RandomCharacterFile (vibhu)
 
 *  (JSS) Ensure the interpolation of Java symbol names as strings
 

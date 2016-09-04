@@ -64,8 +64,8 @@
     rdf:_8 _:dmiles ; 
     rdf:_9 _:alanr ; 
     rdf:_10 _:pipping ; 
-    rdf:_11 _:olof
-    rdf:_12
+    rdf:_11 _:olof ;
+    rdf:_12 _:vibhu ;
 ] .
 
 <abcl:doap>  
