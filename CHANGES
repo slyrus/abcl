@@ -11,15 +11,19 @@ Enhancements
   In support of getting a more universal UIOP:RUN-PROGAM across all
   contemporary Lisp implementations.
 
-* Upstream consolidated patchset (olof)
+* Upstream consolidated patchset (ferada)
 
 ** [r14857] Support `FILE-POSITION` on string streams.
 ** [r14858] Runtime class improvements.
+FIXME:  currently borks CFFI-TESTS
 ** [r14859] Add multiple disassembler selector.
 ** [r14860] Add EXTERNAL-ONLY option to APROPOS.
 ** [r14861] Fix nested classes from JARs not visible with JSS.
 
-* Introduced "time of time" semantics for {encode,decode}-universal time.
+* Introduced "time of time" semantics for {encode,decode}-universal
+  time.
+
+  FIXME:  breaking a number of ANSI tests.  Need to conditionalize runtime behavior.
 
 Fixes
 -----
@@ -31,7 +35,7 @@ Fixes
 Updates
 ------
 
-* asdf-3.1.7.9
+* asdf-3.1.7.26
 
 * jna-4.2.2
 
