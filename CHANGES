@@ -25,6 +25,10 @@ FIXME:  currently borks CFFI-TESTS
 
   FIXME:  breaking a number of ANSI tests.  Need to conditionalize runtime behavior.
 
+* EXTENSIONS:MAKE-TEMP-FILE now takes keyword arguments to specify
+  values of the prefix and suffix strings to the underlying JVM
+  implementation of java.io.File.createTempFile().
+
 Fixes
 -----
 
