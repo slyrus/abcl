@@ -1195,11 +1195,13 @@
 		    ;; when JVM.lisp isn't loaded yet, this variable isn't bound
 		    ;; meaning that we're not trying to compile to a file:
 		    ;; Both COMPILE and COMPILE-FILE bind this variable.
-		    ;; This function is also triggered by MACROEXPAND, though
+		    ;; This function is also triggered by MACROEXPAND, though.
 		    jvm::*file-compilation*)
 	       `(progn
 		  (fset ',name ,lambda-expression)
-		  ;; the below matter, for example when loading a compiled defun that is inside some other form (e.g. flet)
+		  ;; the below matter, for example when loading a
+		  ;; compiled defun that is inside some other form
+		  ;; (e.g. flet)
 		  (record-source-information-for-type ',(if (consp name) (second name) name) '(:function ,name))
 		  (%set-arglist (fdefinition ',name) ',(third lambda-expression))
 		  ,@(when doc
@@ -1215,8 +1217,9 @@
 		      (%defun ',name ,lambda-expression)
 		    (record-source-information-for-type ',sym '(:function ,name))
 		    (%set-arglist (fdefinition ',name) ',(third lambda-expression))
-		    ;; don't do this. building abcl fails autoloading stuff it shouldn't yet
-		    ;; (%set-arglist (symbol-function ',name) ,(format nil "~{~s~^ ~}" (third lambda-expression)))
+		    ;; don't do this. building abcl fails autoloading
+		    ;; stuff it shouldn't yet
+		    ;;(%set-arglist (symbol-function ',name) ,(format nil "~{~s~^ ;; ~}" (third lambda-expression)))
 		    ,@(when doc
 			`((%set-documentation ',name 'function ,doc)))
 		    )))))))
